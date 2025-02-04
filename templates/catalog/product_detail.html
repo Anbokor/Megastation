@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link href="{% static 'css/catalog.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block title %}{{ product.name }}{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Back button -->
+    <div class="mb-4">
+        <a href="{% url 'catalog:product_list' %}" class="btn btn-outline-primary">
+            <i class="fas fa-arrow-left"></i> Volver al catálogo
+        </a>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            {% if product.image %}
+                <img src="{{ product.image.url }}" class="img-fluid rounded" alt="{{ product.name }}">
+            {% endif %}
+        </div>
+        <div class="col-md-6">
+            <h1 class="catalog-title">{{ product.name }}</h1>
+            <span class="badge badge-category mb-3">{{ product.category.name }}</span>
+            <p class="price mb-3">${{ product.price }}</p>
+            <div class="product-description mb-4">
+                {{ product.description|linebreaks }}
+            </div>
+
+            <!-- Stock information -->
+            <div class="stock-info mb-4">
+                <h4 class="mb-3">Disponibilidad en tiendas</h4>
+                {% if stock_info %}
+                    <div class="list-group">
+                    {% for info in stock_info %}
+                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="mb-0">{{ info.sales_point.name }}</h6>
+                                <small class="text-muted">{{ info.sales_point.address }}</small>
+                            </div>
+                            {% if info.quantity > 0 %}
+                                <span class="badge bg-success">{{ info.quantity }} unidades</span>
+                            {% else %}
+                                <span class="badge bg-danger">No disponible</span>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                    </div>
+                {% else %}
+                    <p>No hay información de stock disponible</p>
+                {% endif %}
+            </div>
+
+            {% if product.is_available %}
+                <form action="{% url 'cart:cart_add' product.id %}" method="post" class="d-flex align-items-center">
+                    {% csrf_token %}
+                    {{ cart_add_form.quantity }}
+                    {{ cart_add_form.override }}
+                    <button type="submit" class="btn btn-primary ms-3">
+                        <i class="fas fa-shopping-cart"></i> Agregar al carrito
+                    </button>
+                </form>
+            {% else %}
+                <button class="btn btn-secondary" disabled>No disponible</button>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

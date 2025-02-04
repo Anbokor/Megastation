@@ -1,0 +1,178 @@
+:root {
+    /* Brand Colors */
+    --primary-dark-blue: #006899;
+    --primary-light-blue: #17BEDB;
+    --primary-turquoise: #10A4C7;
+    --accent-yellow: #FFB000;
+    --accent-green: #48FEC1;
+}
+
+/* Typography */
+.catalog-title {
+    font-family: 'Gotham', sans-serif;
+    font-weight: 900;
+    color: var(--primary-dark-blue);
+    margin-bottom: 2rem;
+}
+
+.product-title {
+    font-family: 'Gotham', sans-serif;
+    font-weight: 700;
+    color: var(--primary-dark-blue);
+}
+
+.category-name {
+    font-family: 'Monofour', monospace;
+    color: var(--primary-turquoise);
+}
+
+.product-description {
+    font-family: 'Candara', sans-serif;
+    color: #333;
+    line-height: 1.6;
+}
+
+/* Product Card */
+.product-card {
+    height: 100%;
+    transition: transform 0.2s;
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background: white;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.product-image {
+    height: 200px;
+    object-fit: cover;
+    border-radius: 8px 8px 0 0;
+}
+
+.price {
+    font-family: 'Gotham', sans-serif;
+    font-weight: 700;
+    font-size: 1.25rem;
+    color: var(--primary-dark-blue);
+}
+
+/* Category Sidebar */
+.category-list {
+    background: white;
+    border-radius: 8px;
+    padding: 1rem;
+}
+
+.category-item {
+    font-family: 'Monofour', monospace;
+    color: var(--primary-dark-blue);
+    padding: 0.5rem 1rem;
+    margin-bottom: 0.5rem;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+.category-item:hover {
+    background-color: var(--primary-light-blue);
+    color: white;
+}
+
+.category-item.active {
+    background-color: var(--primary-dark-blue);
+    color: white;
+}
+
+/* Buttons */
+.btn-primary {
+    background-color: var(--primary-dark-blue);
+    border-color: var(--primary-dark-blue);
+    font-family: 'Gotham', sans-serif;
+    font-weight: 700;
+    padding: 0.5rem 1.5rem;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-turquoise);
+    border-color: var(--primary-turquoise);
+}
+
+.btn-secondary {
+    background-color: var(--accent-yellow);
+    border-color: var(--accent-yellow);
+    color: var(--primary-dark-blue);
+}
+
+/* Badges */
+.badge {
+    font-family: 'Monofour', monospace;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+}
+
+.badge-category {
+    background-color: var(--primary-light-blue);
+    color: white;
+}
+
+.badge-availability {
+    background-color: var(--accent-green);
+}
+
+/* Stock information */
+.stock-info {
+    background-color: var(--background-light);
+    border-radius: 8px;
+    padding: 1rem;
+}
+
+.stock-info h4 {
+    font-family: 'Gotham', sans-serif;
+    font-weight: 700;
+    color: var(--primary-dark-blue);
+}
+
+.stock-info .list-group-item {
+    border: none;
+    margin-bottom: 0.5rem;
+    border-radius: 4px;
+    background-color: white;
+}
+
+.stock-info .badge {
+    font-family: 'Monofour', monospace;
+}
+
+.stock-info .badge.bg-success {
+    background-color: var(--accent-green) !important;
+    color: var(--primary-dark-blue);
+}
+
+.stock-info .badge.bg-danger {
+    background-color: var(--accent-yellow) !important;
+    color: var(--primary-dark-blue);
+}
+
+/* Back button */
+.btn-outline-primary {
+    color: var(--primary-dark-blue);
+    border-color: var(--primary-dark-blue);
+    font-family: 'Gotham', sans-serif;
+    font-weight: 700;
+    transition: all 0.3s ease;
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--primary-dark-blue);
+    border-color: var(--primary-dark-blue);
+    color: white;
+}
+
+.btn-outline-primary i {
+    margin-right: 0.5rem;
+}
