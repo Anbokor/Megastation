@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Pedido #{{ order.id }}{% endblock %}
+
+{% block extra_css %}
+<link href="{% static 'css/catalog.css' %}" rel="stylesheet">
+<style>
+    .status-badge {
+        padding: 0.5rem 1rem;
+        border-radius: 4px;
+        font-weight: 500;
+    }
+    .status-pending { background-color: #FFB000; color: #000; }
+    .status-processing { background-color: #17BEDB; color: #fff; }
+    .status-shipped { background-color: #10A4C7; color: #fff; }
+    .status-delivered { background-color: #48FEC1; color: #000; }
+    .status-cancelled { background-color: #dc3545; color: #fff; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Back button -->
+    <div class="mb-4">
+        <a href="{% url 'orders:order_list' %}" class="btn btn-outline-primary">
+            <i class="fas fa-arrow-left"></i> Volver a mis pedidos
+        </a>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            <h2 class="catalog-title mb-4">
+                Pedido #{{ order.id }}
+                <span class="status-badge status-{{ order.status }} ms-3">
+                    {{ order.get_status_display }}
+                </span>
+            </h2>
+
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title mb-4">Productos</h5>
+                    {% for item in order.items.all %}
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="flex-shrink-0">
+                                {% if item.product.image %}
+                                    <img src="{{ item.product.image.url }}"
+                                         alt="{{ item.product.name }}"
+                                         style="width: 50px; height: 50px; object-fit: cover;">
+                                {% endif %}
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h6 class="mb-0">{{ item.product.name }}</h6>
+                                <small class="text-muted">
+                                    {{ item.quantity }} x ${{ item.price }}
+                                </small>
+                            </div>
+                            <div class="text-end">
+                                <strong>${{ item.get_cost }}</strong>
+                            </div>
+                        </div>
+                    {% endfor %}
+                    <hr>
+                    <div class="d-flex justify-content-between">
+                        <h5>Total</h5>
+                        <h5>${{ order.get_total_cost }}</h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title mb-4">Información de envío</h5>
+                    <p class="mb-1"><strong>Nombre:</strong> {{ order.first_name }} {{ order.last_name }}</p>
+                    <p class="mb-1"><strong>Email:</strong> {{ order.email }}</p>
+                    <p class="mb-1"><strong>Dirección:</strong> {{ order.address }}</p>
+                    <p class="mb-1"><strong>Ciudad:</strong> {{ order.city }}</p>
+                    <p class="mb-1"><strong>Código postal:</strong> {{ order.postal_code }}</p>
+                </div>
+            </div>
+
+            {% if order.note %}
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title mb-3">Nota adicional</h5>
+                        <p class="mb-0">{{ order.note }}</p>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

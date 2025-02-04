@@ -1,8 +1,10 @@
-from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from .models import OrderItem
-from .forms import OrderCreateForm
+from django.shortcuts import render, redirect
+
 from cart.cart import Cart
+from .emails import send_order_confirmation_email
+from .forms import OrderCreateForm
+from .models import OrderItem
 
 
 @login_required
@@ -22,6 +24,7 @@ def order_create(request):
             order.user = request.user
             order.save()
 
+            # Create order items
             for item in cart:
                 OrderItem.objects.create(
                     order=order,
@@ -32,6 +35,9 @@ def order_create(request):
 
             # Clear the cart
             cart.clear()
+
+            # Send confirmation email
+            send_order_confirmation_email(order)
 
             return render(request,
                           'orders/order_created.html',

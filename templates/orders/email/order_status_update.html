@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            background-color: #006899;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        .content {
+            padding: 20px;
+        }
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #FFB000;
+            color: #006899;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        .status-processing { background-color: #17BEDB; color: white; }
+        .status-shipped { background-color: #10A4C7; color: white; }
+        .status-delivered { background-color: #48FEC1; color: black; }
+        .status-cancelled { background-color: #dc3545; color: white; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Actualización de tu pedido</h1>
+        </div>
+        <div class="content">
+            <p>Hola {{ order.first_name }},</p>
+            <p>El estado de tu pedido #{{ order.id }} ha sido actualizado.</p>
+
+            <p>Estado actual:
+                <span class="status-badge status-{{ order.status }}">
+                    {{ order.get_status_display }}
+                </span>
+            </p>
+
+            <h3>Detalles del pedido:</h3>
+            <table>
+                <tr>
+                    <th>Producto</th>
+                    <th>Cantidad</th>
+                    <th>Total</th>
+                </tr>
+                {% for item in order.items.all %}
+                <tr>
+                    <td>{{ item.product.name }}</td>
+                    <td>{{ item.quantity }}</td>
+                    <td>${{ item.get_cost }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+
+            <p style="text-align: center; margin-top: 30px;">
+                <a href="http://{{ site_url }}{% url 'orders:order_detail' order.id %}" class="button">
+                    Ver detalles del pedido
+                </a>
+            </p>
+        </div>
+        <div class="footer">
+            <p>Este es un correo automático, por favor no responder.</p>
+            <p>© {% now "Y" %} Megastation - Todos los derechos reservados</p>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Realizar pedido{% endblock %}
+
+{% block extra_css %}
+<link href="{% static 'css/catalog.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Back button -->
+    <div class="mb-4">
+        <a href="{% url 'cart:cart_detail' %}" class="btn btn-outline-primary">
+            <i class="fas fa-arrow-left"></i> Volver al carrito
+        </a>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            <h2 class="catalog-title mb-4">Datos de envío</h2>
+            <form method="post" class="mb-4">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        {{ form.first_name.label_tag }}
+                        {{ form.first_name }}
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        {{ form.last_name.label_tag }}
+                        {{ form.last_name }}
+                    </div>
+                </div>
+                <div class="mb-3">
+                    {{ form.email.label_tag }}
+                    {{ form.email }}
+                </div>
+                <div class="mb-3">
+                    {{ form.address.label_tag }}
+                    {{ form.address }}
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        {{ form.postal_code.label_tag }}
+                        {{ form.postal_code }}
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        {{ form.city.label_tag }}
+                        {{ form.city }}
+                    </div>
+                </div>
+                <div class="mb-3">
+                    {{ form.note.label_tag }}
+                    {{ form.note }}
+                </div>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-check"></i> Confirmar pedido
+                </button>
+            </form>
+        </div>
+        <div class="col-md-4">
+            <h2 class="catalog-title mb-4">Resumen del pedido</h2>
+            <div class="card">
+                <div class="card-body">
+                    {% for item in cart %}
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div>
+                                <h6 class="mb-0">{{ item.product.name }}</h6>
+                                <small class="text-muted">{{ item.quantity }} x ${{ item.price }}</small>
+                            </div>
+                            <span>${{ item.total_price }}</span>
+                        </div>
+                    {% endfor %}
+                    <hr>
+                    <div class="d-flex justify-content-between">
+                        <h5>Total</h5>
+                        <h5>${{ cart.get_total_price }}</h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

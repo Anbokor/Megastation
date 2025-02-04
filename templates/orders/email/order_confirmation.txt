@@ -1,0 +1,23 @@
+¡Gracias por tu pedido!
+
+Hola {{ order.first_name }},
+
+Tu pedido #{{ order.id }} ha sido confirmado y está siendo procesado.
+
+Detalles del pedido:
+{% for item in order.items.all %}
+- {{ item.product.name }} x {{ item.quantity }}: ${{ item.get_cost }}
+{% endfor %}
+
+Total: ${{ order.get_total_cost }}
+
+Dirección de envío:
+{{ order.address }}
+{{ order.postal_code }} {{ order.city }}
+
+Puedes ver los detalles de tu pedido en:
+{{ request.scheme }}://{{ request.get_host }}{% url 'orders:order_detail' order.id %}
+
+Este es un correo automático, por favor no responder.
+
+© {% now "Y" %} Megastation - Todos los derechos reservados

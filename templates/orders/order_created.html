@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Pedido confirmado{% endblock %}
+
+{% block extra_css %}
+<link href="{% static 'css/catalog.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="text-center py-5">
+        <i class="fas fa-check-circle fa-4x text-success mb-4"></i>
+        <h2 class="catalog-title">¡Gracias por tu pedido!</h2>
+        <p class="lead">Tu pedido ha sido procesado correctamente.</p>
+        <p>Tu número de pedido es: <strong>{{ order.id }}</strong></p>
+        <p>Te hemos enviado un correo electrónico con los detalles del pedido.</p>
+        <div class="mt-4">
+            <a href="{% url 'orders:order_detail' order.id %}" class="btn btn-primary me-2">
+                <i class="fas fa-eye"></i> Ver detalles del pedido
+            </a>
+            <a href="{% url 'catalog:product_list' %}" class="btn btn-outline-primary">
+                <i class="fas fa-shopping-basket"></i> Seguir comprando
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
