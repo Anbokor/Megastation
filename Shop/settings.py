@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'catalog',
     'cart',
     'orders',
+    'users',
 ]
 
 MIDDLEWARE = [
@@ -115,6 +116,11 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+#Custom user authentication
+AUTH_USER_MODEL = 'users.CustomUser'
+
+#Login redirect
+LOGOUT_REDIRECT_URL = '/'
 
 # Internationalization
 LANGUAGE_CODE = os.getenv('LANGUAGE_CODE', 'es-AR')

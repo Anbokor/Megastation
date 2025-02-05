@@ -1,6 +1,6 @@
 from django.db import models
+from django.conf import settings
 from catalog.models import Product
-from django.contrib.auth.models import User
 
 class Order(models.Model):
     """
@@ -18,7 +18,7 @@ class Order(models.Model):
     ]
 
     user = models.ForeignKey(
-        User,
+        settings.AUTH_USER_MODEL,
         on_delete=models.SET_NULL,
         null=True,
         blank=True,

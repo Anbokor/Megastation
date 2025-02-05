@@ -82,11 +82,11 @@
                             <a class="nav-link" href="/admin/">Admin</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/logout/">Cerrar Sesión</a>
+                            <a class="nav-link" href="{% url 'users:logout' %}">Cerrar Sesión</a>
                         </li>
                     {% else %}
                         <li class="nav-item">
-                            <a class="nav-link" href="/login/">Iniciar Sesión</a>
+                            <a class="nav-link" href="{% url 'users:login' %}">Iniciar Sesión</a>
                         </li>
                     {% endif %}
                 </ul>

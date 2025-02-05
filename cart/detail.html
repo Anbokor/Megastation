@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Carrito de compras{% endblock %}
+
+{% block extra_css %}
+<link href="{% static 'css/catalog.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Back button -->
+    <div class="mb-4">
+        <a href="{% url 'catalog:product_list' %}" class="btn btn-outline-primary">
+            <i class="fas fa-arrow-left"></i> Volver al catálogo
+        </a>
+    </div>
+
+    <!-- Messages -->
+    {% if messages %}
+    <div class="messages mb-4">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <h1 class="catalog-title mb-4">Carrito de compras</h1>
+
+    {% if cart %}
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Producto</th>
+                        <th>Cantidad</th>
+                        <th>Precio unitario</th>
+                        <th>Precio total</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in cart %}
+                        {% with product=item.product %}
+                            <tr>
+                                <td>
+                                    <a href="{{ product.get_absolute_url }}" class="text-decoration-none text-dark">
+                                        <div class="d-flex align-items-center">
+                                            {% if product.image %}
+                                                <img src="{{ product.image.url }}"
+                                                     alt="{{ product.name }}"
+                                                     class="me-3"
+                                                     style="width: 50px; height: 50px; object-fit: cover;">
+                                            {% endif %}
+                                            <div>
+                                                <h6 class="mb-0">{{ product.name }}</h6>
+                                                <small class="text-muted">{{ product.category.name }}</small>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </td>
+                                <td>
+                                    <form action="{% url 'cart:cart_add' product.id %}" method="post"
+                                          class="d-flex align-items-center">
+                                        {% csrf_token %}
+                                        {{ item.update_quantity_form.quantity }}
+                                        {{ item.update_quantity_form.override }}
+                                        <button type="submit" class="btn btn-sm btn-outline-primary ms-2">
+                                            <i class="fas fa-sync-alt"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                                <td>${{ item.price }}</td>
+                                <td>${{ item.total_price }}</td>
+                                <td>
+                                    <form action="{% url 'cart:cart_remove' product.id %}" method="post">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-sm btn-danger">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% endwith %}
+                    {% endfor %}
+                    <tr class="table-active">
+                        <td colspan="3" class="text-end"><strong>Total</strong></td>
+                        <td><strong>${{ cart.get_total_price }}</strong></td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center mt-4">
+            <a href="{% url 'catalog:product_list' %}" class="btn btn-outline-primary">
+                <i class="fas fa-shopping-basket"></i> Continuar comprando
+            </a>
+            <a href="{% url 'orders:order_create' %}" class="btn btn-primary">
+                <i class="fas fa-check"></i> Realizar pedido
+            </a>
+        </div>
+    {% else %}
+        <div class="text-center py-5">
+            <i class="fas fa-shopping-cart fa-3x mb-3 text-muted"></i>
+            <h4>Tu carrito está vacío</h4>
+            <p class="text-muted">Agrega productos al carrito para comenzar tu compra</p>
+            <a href="{% url 'catalog:product_list' %}" class="btn btn-primary mt-3">
+                <i class="fas fa-shopping-basket"></i> Ir al catálogo
+            </a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

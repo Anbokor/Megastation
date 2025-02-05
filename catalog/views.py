@@ -3,9 +3,15 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .models import Category, Product, SalesPoint
 from cart.forms import CartAddProductForm
 
+def home(request):
+    """
+    Display the home page.
+    """
+    return render(request, 'catalog/home.html')
+
 def product_list(request, category_slug=None):
     """
-    Display list of products, optionally filtered by category and sales point
+    Display list of products, optionally filtered by category and sales point.
     """
     category = None
     categories = Category.objects.all()
@@ -62,32 +68,3 @@ def product_list(request, category_slug=None):
         'sort_by': sort_by,
     }
     return render(request, 'catalog/product_list.html', context)
-
-def product_detail(request, product_slug):
-    """
-    Display single product details with stock information
-    """
-    product = get_object_or_404(
-        Product.objects.select_related('category'),
-        slug=product_slug,
-        is_available=True
-    )
-    sales_points = SalesPoint.objects.filter(is_active=True)
-
-    # Add cart form
-    cart_add_form = CartAddProductForm()
-
-    # Get stock information for each sales point
-    stock_info = []
-    for point in sales_points:
-        stock_info.append({
-            'sales_point': point,
-            'quantity': point.get_stock_for_product(product)
-        })
-
-    context = {
-        'product': product,
-        'stock_info': stock_info,
-        'cart_add_form': cart_add_form,
-    }
-    return render(request, 'catalog/product_detail.html', context)
