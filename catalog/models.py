@@ -2,6 +2,7 @@ from django.db import models
 from django.utils.text import slugify
 import os
 from django.urls import reverse
+from django.core.validators import MinValueValidator
 
 def get_default_image_path():
     """
@@ -72,6 +73,12 @@ class Category(models.Model):
     def get_absolute_url(self):
         return reverse('catalog:product_list_by_category', args=[self.slug])
 
+    def get_available_products(self):
+        """
+        Returns all available products in this category.
+        """
+        return self.products.filter(is_available=True)
+
 class Product(models.Model):
     """
     Product model:
@@ -99,7 +106,15 @@ class Product(models.Model):
     price = models.DecimalField(
         max_digits=10,
         decimal_places=2,
-        verbose_name='Precio'
+        verbose_name='Precio',
+        validators=[MinValueValidator(0)]
+    )
+    sku = models.CharField(
+        max_length=50,
+        unique=True,
+        verbose_name='SKU',
+        blank=True,
+        null=True
     )
     image = models.ImageField(
         upload_to=product_image_path,
@@ -139,6 +154,15 @@ class Product(models.Model):
     def get_absolute_url(self):
         return reverse('catalog:product_detail', args=[self.slug])
 
+    def get_stock_for_sales_point(self, sales_point):
+        """
+        Returns stock quantity for a specific sales point.
+        """
+        try:
+            stock = self.stocks.get(sales_point=sales_point)
+            return stock.quantity
+        except Stock.DoesNotExist:
+            return 0
 
 class SalesPoint(models.Model):
     """
@@ -161,6 +185,10 @@ class SalesPoint(models.Model):
     )
     email = models.EmailField(
         verbose_name='Correo electrónico'
+    )
+    description = models.TextField(
+        blank=True,
+        verbose_name='Descripción'
     )
     is_active = models.BooleanField(
         default=True,
@@ -214,7 +242,8 @@ class Stock(models.Model):
     )
     quantity = models.IntegerField(
         default=0,
-        verbose_name='Cantidad'
+        verbose_name='Cantidad',
+        validators=[MinValueValidator(0)]
     )
     last_updated = models.DateTimeField(
         auto_now=True,

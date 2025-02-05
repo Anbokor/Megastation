@@ -1,5 +1,7 @@
 from django.contrib import admin
 from django.utils.html import format_html
+from django.core.exceptions import ValidationError
+from django import forms
 from .models import Category, Product, SalesPoint, Stock
 
 @admin.register(Category)
@@ -26,6 +28,7 @@ class ProductAdmin(admin.ModelAdmin):
     search_fields = ['name', 'description']
     prepopulated_fields = {'slug': ('name',)}
     readonly_fields = ['image_preview']
+    actions = ['make_available', 'make_unavailable']
 
     def image_preview(self, obj):
         if obj.image:
@@ -35,6 +38,14 @@ class ProductAdmin(admin.ModelAdmin):
             )
         return "No image"
     image_preview.short_description = 'Vista previa'
+
+    @admin.action(description='Marcar como disponible')
+    def make_available(self, request, queryset):
+        queryset.update(is_available=True)
+
+    @admin.action(description='Marcar como no disponible')
+    def make_unavailable(self, request, queryset):
+        queryset.update(is_available=False)
 
 @admin.register(SalesPoint)
 class SalesPointAdmin(admin.ModelAdmin):
@@ -46,11 +57,26 @@ class SalesPointAdmin(admin.ModelAdmin):
     search_fields = ['name', 'address', 'email']
     readonly_fields = ['created_at', 'updated_at']
 
+class StockForm(forms.ModelForm):
+    """
+    Form for Stock model with custom validation
+    """
+    class Meta:
+        model = Stock
+        fields = '__all__'
+
+    def clean_quantity(self):
+        quantity = self.cleaned_data['quantity']
+        if quantity < 0:
+            raise ValidationError('La cantidad no puede ser negativa.')
+        return quantity
+
 class StockInline(admin.TabularInline):
     """
     Inline admin for Stock model to be used in Product and SalesPoint admin
     """
     model = Stock
+    form = StockForm
     extra = 1
 
 @admin.register(Stock)
